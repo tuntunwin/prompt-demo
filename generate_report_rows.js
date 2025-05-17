@@ -75,10 +75,115 @@ function generateReportRows(data, config) {
     return result;
   }
 
+  function generateRowsForIncident(incident) {
+    const rows = [];
+    // Get all child arrays
+    const vehicles = incident.details?.vehiclesInvolved || [];
+    const advisories = incident.advisories || [];
+    const responders = incident.responders || [];
+    // Personnel arrays for each responder
+    const responderPersonnel = responders.map(r => r.personnel || []);
+
+    // Row 1: all parent fields, first advisory, first vehicle, first responder, first personnel of first responder
+    rows.push({
+      incidentId: incident.incidentId || '',
+      type: incident.type || '',
+      'location.road': incident.location?.road || '',
+      'location.direction': incident.location?.direction || '',
+      'location.landmark': incident.location?.landmark || '',
+      time: incident.time || '',
+      status: incident.status || '',
+      'advisories.type': advisories[0]?.type || '',
+      'advisories.messages': advisories[0]?.messages || '',
+      'details.vehiclesInvolved.type': vehicles[0]?.type || '',
+      'details.vehiclesInvolved.plateNumber': vehicles[0]?.plateNumber || '',
+      'details.vehiclesInvolved.severity': vehicles[0]?.severity || '',
+      'details.casualties': incident.details?.casualties ?? '',
+      'details.lanesBlocked': incident.details?.lanesBlocked ?? '',
+      'responders.agency': responders[0]?.agency || '',
+      'responders.arrivalTime': responders[0]?.arrivalTime || '',
+      'responders.personnel.name': responderPersonnel[0]?.[0]?.name || '',
+      'responders.personnel.role': responderPersonnel[0]?.[0]?.role || ''
+    });
+
+    // Row 2: second vehicle, second personnel of first responder
+    if (vehicles.length > 1 || (responderPersonnel[0] && responderPersonnel[0].length > 1)) {
+      rows.push({
+        incidentId: '',
+        type: '',
+        'location.road': '',
+        'location.direction': '',
+        'location.landmark': '',
+        time: '',
+        status: '',
+        'advisories.type': '',
+        'advisories.messages': '',
+        'details.vehiclesInvolved.type': vehicles[1]?.type || '',
+        'details.vehiclesInvolved.plateNumber': vehicles[1]?.plateNumber || '',
+        'details.vehiclesInvolved.severity': vehicles[1]?.severity || '',
+        'details.casualties': '',
+        'details.lanesBlocked': '',
+        'responders.agency': '',
+        'responders.arrivalTime': '',
+        'responders.personnel.name': responderPersonnel[0]?.[1]?.name || '',
+        'responders.personnel.role': responderPersonnel[0]?.[1]?.role || ''
+      });
+    }
+
+    // Row 3: second responder, their first personnel
+    if (responders.length > 1) {
+      rows.push({
+        incidentId: '',
+        type: '',
+        'location.road': '',
+        'location.direction': '',
+        'location.landmark': '',
+        time: '',
+        status: '',
+        'advisories.type': '',
+        'advisories.messages': '',
+        'details.vehiclesInvolved.type': '',
+        'details.vehiclesInvolved.plateNumber': '',
+        'details.vehiclesInvolved.severity': '',
+        'details.casualties': '',
+        'details.lanesBlocked': '',
+        'responders.agency': responders[1]?.agency || '',
+        'responders.arrivalTime': responders[1]?.arrivalTime || '',
+        'responders.personnel.name': responderPersonnel[1]?.[0]?.name || '',
+        'responders.personnel.role': responderPersonnel[1]?.[0]?.role || ''
+      });
+    }
+
+    // Row 4: second personnel of second responder
+    if (responderPersonnel[1] && responderPersonnel[1].length > 1) {
+      rows.push({
+        incidentId: '',
+        type: '',
+        'location.road': '',
+        'location.direction': '',
+        'location.landmark': '',
+        time: '',
+        status: '',
+        'advisories.type': '',
+        'advisories.messages': '',
+        'details.vehiclesInvolved.type': '',
+        'details.vehiclesInvolved.plateNumber': '',
+        'details.vehiclesInvolved.severity': '',
+        'details.casualties': '',
+        'details.lanesBlocked': '',
+        'responders.agency': '',
+        'responders.arrivalTime': '',
+        'responders.personnel.name': responderPersonnel[1]?.[1]?.name || '',
+        'responders.personnel.role': responderPersonnel[1]?.[1]?.role || ''
+      });
+    }
+    return rows;
+  }
+
   const arrayPaths = getArrayPaths(fields);
   let reportRows = [];
-  for (const item of data) {
-    reportRows = reportRows.concat(flatten(item));
+  for (const incident of data) {
+    reportRows = reportRows.concat(generateRowsForIncident(incident));
   }
   return reportRows;
 }
