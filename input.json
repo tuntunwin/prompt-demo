@@ -11,8 +11,8 @@
     "status": "Ongoing",
     "details": {
       "vehiclesInvolved": [
-        { "type": "Car", "plateNumber": "SBC1234X", "severity": "Moderate" },
-        { "type": "Motorcycle", "plateNumber": "FBA5678Z", "severity": "High" }
+        { "type": "Car", "plateNumber": {"serial":"SBC1234X", "region":"SG"}, "severity": "Moderate" },
+        { "type": "Motorcycle", "plateNumber":{"serial":"SBC2334X", "region":"ML"}, "severity": "High" }
       ],
       "casualties": 1,
       "lanesBlocked": "Lane 1, Lane 2"
@@ -58,8 +58,8 @@
     "status": "Ongoing",
     "details": {
       "vehiclesInvolved": [
-        { "type": "Train", "plateNumber": "SBC1234X", "severity": "Moderate" },
-        { "type": "Truck", "plateNumber": "FBA5678Z", "severity": "High" }
+          { "type": "Truck", "plateNumber": {"serial":"SBC1234X", "region":"SG"}, "severity": "Moderate" },
+        { "type": "Motorcycle", "plateNumber":{"serial":"SBC2334X", "region":"ML"}, "severity": "High" }
       ],
       "casualties": 1,
       "lanesBlocked": "Lane 1, Lane 2"
