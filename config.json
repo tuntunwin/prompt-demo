@@ -1,0 +1,20 @@
+[
+  "incidentId",
+  "type",
+  "location.road",
+  "location.direction",
+  "location.landmark",
+  "time",
+  "status",
+  "advisories.type",
+  "advisories.message",
+  "details.vehiclesInvolved.type",
+  "details.vehiclesInvolved.plateNumber",
+  "details.vehiclesInvolved.severity",
+  "details.casualties",
+  "details.lanesBlocked",
+  "responders.agency",
+  "responders.arrivalTime",
+  "responders.personnel.name",
+  "responders.personnel.role"
+]
