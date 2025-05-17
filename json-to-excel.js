@@ -43,23 +43,81 @@ function getField(obj, path) {
   return value !== undefined ? value : '';
 }
 
+// Helper to recursively flatten nested arrays for all paths
+function flattenData(item, config, parent = {}, prefix = '') {
+  let rows = [];
+  let hasArray = false;
+
+  // Find the first array field in config.fields for this level
+  for (const field of config.fields) {
+    const parts = field.split('.');
+    if (parts.length > 1 && parts[0] === prefix.replace(/\.$/, '')) {
+      const next = parts[1];
+      const value = item && item[next];
+      if (Array.isArray(value)) {
+        hasArray = true;
+        for (const v of value) {
+          const newParent = { ...parent, ...Object.fromEntries(Object.entries(item).filter(([k]) => k !== next)) };
+          const nestedRows = flattenData(v, {
+            fields: config.fields
+              .filter(f => f.startsWith(prefix + next + '.'))
+              .map(f => f.replace(prefix + next + '.', ''))
+          }, newParent, '');
+          // Add prefix to nested fields
+          for (const row of nestedRows) {
+            rows.push({ ...row, ...newParent });
+          }
+        }
+        break;
+      }
+    }
+  }
+
+  if (!hasArray) {
+    // Leaf node, collect all fields for this row
+    const row = { ...parent };
+    for (const field of config.fields) {
+      const parts = field.split('.');
+      let value = item;
+      for (const part of parts) {
+        value = value && value[part];
+      }
+      if (Array.isArray(value)) value = value.join(', ');
+      row[prefix + parts[0]] = value !== undefined ? value : '';
+    }
+    rows.push(row);
+  }
+  return rows;
+}
+
+function expandAllRows(data, config) {
+  let allRows = [];
+  for (const item of data) {
+    // For each top-level item, recursively flatten
+    const rows = flattenData(item, config);
+    allRows = allRows.concat(rows);
+  }
+  return allRows;
+}
+
 // Main function to convert JSON to Excel
 function jsonToExcel(data, config, outputFile) {
-  const rows = [];
-  // Header row
-  rows.push(config.fields);
-
-  // Data rows
-  data.forEach(item => {
-    const row = config.fields.map(field => getField(item, field));
+  // Expand all rows
+  const expandedRows = expandAllRows(data, config);
+  // Prepare header
+  const header = config.fields;
+  // Prepare data rows
+  const rows = [header];
+  console.log("expandedRows", expandedRows);
+  for (const rowObj of expandedRows) {
+    const row = header.map(field => rowObj[field] !== undefined ? rowObj[field] : '');
     rows.push(row);
-  });
-
+  }
+  console.log("mapped rows", rows);
   // Create worksheet and workbook
   const worksheet = XLSX.utils.aoa_to_sheet(rows);
   const workbook = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(workbook, worksheet, 'Report');
-
   // Write to file
   XLSX.writeFile(workbook, outputFile);
 }
