@@ -1,6 +1,6 @@
 import * as XLSX from 'xlsx';
 import fs from 'fs';
-import { deduplicateRowFieldsByParent } from './deduplicateRowFields.js';
+
 
 // Configuration for fields to include
 const config = {
@@ -19,7 +19,7 @@ const config = {
     "details.casualties",
     "details.lanesBlocked",
     "advisories.type",
-    "advisories.messages",
+    "advisories.message",
     "responders.agency",
      "responders.arrivalTime",
     "responders.personnel.name",
@@ -203,6 +203,65 @@ function expandAllRows(data, config) {
   return allRows;
 }
 
+// Inline deduplication during flattening, per parent group
+function flattenObjectDedup(obj, fields, parentKey, seen = {}, prefix = '', parent = {}, parentValue = null) {
+  // If starting a new parent group, reset seen
+  if (parentValue === null && obj[parentKey]) {
+    seen = {};
+    parentValue = obj[parentKey];
+  }
+  // Find the first array in the fields
+  for (let i = 0; i < fields.length; i++) {
+    const field = fields[i];
+    const parts = field.split('.');
+    let ref = obj;
+    let arrIdx = -1;
+    for (let j = 0; j < parts.length; j++) {
+      if (Array.isArray(ref)) {
+        arrIdx = j;
+        break;
+      }
+      ref = ref ? ref[parts[j]] : undefined;
+    }
+    if (Array.isArray(ref)) {
+      let rows = [];
+      for (const item of ref) {
+        let newObj = obj;
+        let target = newObj;
+        for (let k = 0; k < arrIdx - 1; k++) {
+          target = target[parts[k]];
+        }
+        if (arrIdx > 0) {
+          target[parts[arrIdx - 1]] = item;
+        } else {
+          newObj = item;
+        }
+        rows = rows.concat(flattenObjectDedup(newObj, fields, parentKey, seen, prefix, parent, parentValue));
+      }
+      return rows;
+    }
+  }
+  // No arrays left, output a row with inline deduplication
+  const row = { ...parent };
+  for (const field of fields) {
+    const parts = field.split('.');
+    let value = obj;
+    for (const part of parts) {
+      value = value && value[part];
+    }
+    if (Array.isArray(value)) value = value.join(', ');
+    // Inline deduplication per parent group
+    if (!seen[field]) seen[field] = new Set();
+    if (value && seen[field].has(value)) {
+      row[field] = '';
+    } else {
+      row[field] = value !== undefined ? value : '';
+      if (value) seen[field].add(value);
+    }
+  }
+  return [row];
+}
+
 // Main function to convert JSON to Excel
 function jsonToExcel(data, config, outputFile) {
   // Expand all rows
@@ -227,22 +286,18 @@ function jsonToExcel(data, config, outputFile) {
 
 // Example usage
 const inputData = JSON.parse(fs.readFileSync('input.json', 'utf8'));
-// If inputData is an array, flatten all records, not just the first
-let allRows = inputData.flatMap(item => expandAllRows([item], config));
-// Deduplicate field values within each parent (incidentId)
-allRows = deduplicateRowFieldsByParent(allRows, config.fields, 'incidentId');
-// Prepare header
 const header = config.fields;
-// Prepare data rows
+let allRows = [];
+for (const item of inputData) {
+  allRows = allRows.concat(flattenObjectDedup(item, header, 'incidentId'));
+}
 const rows = [header];
 for (const rowObj of allRows) {
   const row = header.map(field => rowObj[field] !== undefined ? rowObj[field] : '');
   rows.push(row);
 }
-// Create worksheet and workbook
 const worksheet = XLSX.utils.aoa_to_sheet(rows);
 const workbook = XLSX.utils.book_new();
 XLSX.utils.book_append_sheet(workbook, worksheet, 'Report');
-// Write to file
 XLSX.writeFile(workbook, 'output.xlsx');
 console.log('Exported to output.xlsx');
