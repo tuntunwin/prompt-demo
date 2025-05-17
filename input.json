@@ -15,7 +15,7 @@
         { "type": "Motorcycle", "plateNumber": "FBA5678Z", "severity": "High" }
       ],
       "casualties": 1,
-      "lanesBlocked": ["Lane 1", "Lane 2"]
+      "lanesBlocked": "Lane 1, Lane 2"
     },
     "advisories": [
       {

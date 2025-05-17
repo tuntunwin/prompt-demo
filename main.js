@@ -31,12 +31,12 @@
 // //console.log(reportRows);
 import fs from 'fs';
 
-const { generateReportRows } = await import('./generate_report_rows.js');
+const  {generateNestedReportRowsDedupedMerged}  = await import('./nestedReport.js');
 
 const input = JSON.parse(fs.readFileSync('./input.json', 'utf-8'));
 const config = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
 
 
-const rows = generateReportRows(input, config);
+const rows = generateNestedReportRowsDedupedMerged(input);
 fs.writeFileSync('./output.json', JSON.stringify(rows, null, 2));
 //console.log(JSON.stringify(rows, null, 2));

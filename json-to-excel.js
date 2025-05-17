@@ -1,16 +1,20 @@
-const XLSX = require('xlsx');
-const fs = require('fs');
+import * as XLSX from 'xlsx';
+import fs from 'fs';
 
 // Configuration for fields to include
 const config = {
   fields: [
-    "incidentId",
-    "type",
+    
     "location.road",
     "location.direction",
     "location.landmark",
+    "incidentId",
+    "type",
     "time",
     "status",
+    "responders.arrivalTime",
+    "responders.personnel.name",
+    "responders.personnel.role",
     "details.vehiclesInvolved.type",
     "details.vehiclesInvolved.plateNumber",
     "details.vehiclesInvolved.severity",
@@ -18,10 +22,8 @@ const config = {
     "details.lanesBlocked",
     "advisories.type",
     "advisories.messages",
-    "responders.agency",
-    "responders.arrivalTime",
-    "responders.personnel.name",
-    "responders.personnel.role"
+    "responders.agency"
+    
   ]
 };
 
@@ -225,3 +227,18 @@ function jsonToExcel(data, config, outputFile) {
 // Example usage
 const inputData = JSON.parse(fs.readFileSync('input.json', 'utf8'));
 jsonToExcel(inputData, config, 'output.xlsx');
+
+// Read the output.json file
+const { header, rows } = JSON.parse(fs.readFileSync('./output.json', 'utf-8'));
+
+// Convert rows to worksheet
+const worksheet = XLSX.utils.json_to_sheet(rows, { header });
+
+// Create a new workbook and append the worksheet
+const workbook = XLSX.utils.book_new();
+XLSX.utils.book_append_sheet(workbook, worksheet, 'Report');
+
+// Write the workbook to output.xlsx
+XLSX.writeFile(workbook, './output.xlsx');
+
+console.log('Exported to output.xlsx');
