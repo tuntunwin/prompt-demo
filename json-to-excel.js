@@ -43,58 +43,158 @@ function getField(obj, path) {
   return value !== undefined ? value : '';
 }
 
-// Helper to recursively flatten nested arrays for all paths
-function flattenData(item, config, parent = {}, prefix = '') {
-  let rows = [];
-  let hasArray = false;
+// Recursively get all paths for dot notation fields
+function getAllFieldPaths(obj, prefix = '') {
+  let paths = [];
+  if (Array.isArray(obj)) {
+    obj.forEach((item, idx) => {
+      paths = paths.concat(getAllFieldPaths(item, prefix));
+    });
+  } else if (obj && typeof obj === 'object') {
+    for (const key of Object.keys(obj)) {
+      const newPrefix = prefix ? prefix + '.' + key : key;
+      if (Array.isArray(obj[key])) {
+        // For arrays, recurse into each element
+        obj[key].forEach((item) => {
+          paths = paths.concat(getAllFieldPaths(item, newPrefix));
+        });
+      } else if (obj[key] && typeof obj[key] === 'object') {
+        paths = paths.concat(getAllFieldPaths(obj[key], newPrefix));
+      } else {
+        paths.push(newPrefix);
+      }
+    }
+  }
+  return paths;
+}
 
-  // Find the first array field in config.fields for this level
+// Cartesian product utility for nested arrays
+function cartesianProduct(arrays) {
+  return arrays.reduce((a, b) => a.flatMap(d => b.map(e => d.concat([e]))), [[]]);
+}
+
+// Recursively flatten the object to rows for all nested arrays, expanding all arrays at the current level
+function flattenToRows(obj, config, parent = {}, prefix = '') {
+  // Find all array fields at the current level (not nested)
+  let arrayFields = [];
   for (const field of config.fields) {
     const parts = field.split('.');
     if (parts.length > 1 && parts[0] === prefix.replace(/\.$/, '')) {
       const next = parts[1];
-      const value = item && item[next];
+      const value = obj && obj[next];
       if (Array.isArray(value)) {
-        hasArray = true;
-        for (const v of value) {
-          const newParent = { ...parent, ...Object.fromEntries(Object.entries(item).filter(([k]) => k !== next)) };
-          const nestedRows = flattenData(v, {
-            fields: config.fields
-              .filter(f => f.startsWith(prefix + next + '.'))
-              .map(f => f.replace(prefix + next + '.', ''))
-          }, newParent, '');
-          // Add prefix to nested fields
-          for (const row of nestedRows) {
-            rows.push({ ...row, ...newParent });
-          }
-        }
-        break;
+        arrayFields.push({ key: next, value });
       }
     }
   }
 
-  if (!hasArray) {
-    // Leaf node, collect all fields for this row
-    const row = { ...parent };
-    for (const field of config.fields) {
-      const parts = field.split('.');
-      let value = item;
-      for (const part of parts) {
-        value = value && value[part];
+  if (arrayFields.length > 0) {
+    // Expand all arrays at this level using cartesian product
+    const arrays = arrayFields.map(f => f.value.map(item => ({ key: f.key, item })));
+    const combinations = cartesianProduct(arrays.length ? arrays : [[]]);
+    let rows = [];
+    for (const combo of combinations) {
+      let newObj = { ...obj };
+      // Replace each array with the selected item
+      for (const { key, item } of combo) {
+        newObj = { ...newObj, [key]: item };
       }
-      if (Array.isArray(value)) value = value.join(', ');
-      row[prefix + parts[0]] = value !== undefined ? value : '';
+      // Prepare configs for nested and parent fields
+      let nestedFields = [];
+      arrayFields.forEach(f => {
+        nestedFields = nestedFields.concat(
+          config.fields
+            .filter(field => field.startsWith((prefix ? prefix + '.' : '') + f.key + '.'))
+            .map(field => field.replace((prefix ? prefix + '.' : '') + f.key + '.', ''))
+        );
+      });
+      const nestedConfig = { fields: nestedFields };
+      const parentFields = config.fields.filter(field =>
+        !arrayFields.some(f => field.startsWith((prefix ? prefix + '.' : '') + f.key + '.'))
+      );
+      const parentConfig = { fields: parentFields };
+      // Recursively flatten
+      const nestedRows = flattenToRows(newObj, nestedConfig, { ...parent, ...flattenToRow(newObj, parentConfig, prefix) }, '');
+      rows = rows.concat(nestedRows);
     }
-    rows.push(row);
+    return rows;
+  } else {
+    // No arrays at this level, just map fields
+    return [flattenToRow(obj, config, prefix, parent)];
   }
-  return rows;
 }
 
+// Helper to flatten a single object to a row
+function flattenToRow(obj, config, prefix = '', parent = {}) {
+  const row = { ...parent };
+  for (const field of config.fields) {
+    const parts = field.split('.');
+    let value = obj;
+    for (const part of parts) {
+      value = value && value[part];
+    }
+    if (Array.isArray(value)) value = value.join(', ');
+    row[(prefix ? prefix + '.' : '') + field] = value !== undefined ? value : '';
+  }
+  return row;
+}
+
+// Recursively flatten an object so that each row represents a unique path through all nested arrays
+function flattenObject(obj, fields, prefix = '', parent = {}) {
+  // Find the first array in the fields
+  for (let i = 0; i < fields.length; i++) {
+    const field = fields[i];
+    const parts = field.split('.');
+    let ref = obj;
+    let arrIdx = -1;
+    // Walk down the object to find the first array in the path
+    for (let j = 0; j < parts.length; j++) {
+      if (Array.isArray(ref)) {
+        arrIdx = j;
+        break;
+      }
+      ref = ref ? ref[parts[j]] : undefined;
+    }
+    if (Array.isArray(ref)) {
+      // Expand this array
+      let rows = [];
+      for (const item of ref) {
+        // Rebuild the object with this array element in place
+        let newObj = obj;
+        let target = newObj;
+        for (let k = 0; k < arrIdx - 1; k++) {
+          target = target[parts[k]];
+        }
+        if (arrIdx > 0) {
+          target[parts[arrIdx - 1]] = item;
+        } else {
+          newObj = item;
+        }
+        // Recursively flatten with the same fields
+        rows = rows.concat(flattenObject(newObj, fields, prefix, parent));
+      }
+      return rows;
+    }
+  }
+  // No arrays left, output a row
+  const row = { ...parent };
+  for (const field of fields) {
+    const parts = field.split('.');
+    let value = obj;
+    for (const part of parts) {
+      value = value && value[part];
+    }
+    if (Array.isArray(value)) value = value.join(', ');
+    row[field] = value !== undefined ? value : '';
+  }
+  return [row];
+}
+
+// Expand all rows by recursively flattening each item in the data array
 function expandAllRows(data, config) {
   let allRows = [];
   for (const item of data) {
-    // For each top-level item, recursively flatten
-    const rows = flattenData(item, config);
+    const rows = flattenObject(item, config.fields);
     allRows = allRows.concat(rows);
   }
   return allRows;
@@ -113,7 +213,7 @@ function jsonToExcel(data, config, outputFile) {
     const row = header.map(field => rowObj[field] !== undefined ? rowObj[field] : '');
     rows.push(row);
   }
-  console.log("mapped rows", rows);
+  //console.log("mapped rows", rows);
   // Create worksheet and workbook
   const worksheet = XLSX.utils.aoa_to_sheet(rows);
   const workbook = XLSX.utils.book_new();

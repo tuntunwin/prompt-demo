@@ -1,0 +1,418 @@
+[
+  {
+    "incidentId": "INC001",
+    "type": "Accident",
+    "location.road": "PIE",
+    "location.direction": "towards Tuas",
+    "location.landmark": "before Eunos Exit",
+    "time": "2025-05-17T07:35:00+08:00",
+    "status": "Ongoing",
+    "details.vehiclesInvolved.type": "Car",
+    "details.vehiclesInvolved.plateNumber": "SBC1234X",
+    "details.vehiclesInvolved.severity": "Moderate",
+    "details.casualties": 1,
+    "details.lanesBlocked": [
+      "Lane 1",
+      "Lane 2"
+    ],
+    "advisories.type": "Diversion",
+    "advisories.messages": [
+      "Use Exit 10A to Eunos Link",
+      "Avoid Lane 1 and Lane 2 near the exit"
+    ],
+    "responders.agency": "Traffic Police",
+    "responders.arrivalTime": "2025-05-17T07:45:00+08:00",
+    "responders.personnel.name": "Sgt. Tan Wei",
+    "responders.personnel.role": "Team Leader"
+  },
+  {
+    "incidentId": "INC001",
+    "type": "Accident",
+    "location.road": "PIE",
+    "location.direction": "towards Tuas",
+    "location.landmark": "before Eunos Exit",
+    "time": "2025-05-17T07:35:00+08:00",
+    "status": "Ongoing",
+    "details.vehiclesInvolved.type": "Car",
+    "details.vehiclesInvolved.plateNumber": "SBC1234X",
+    "details.vehiclesInvolved.severity": "Moderate",
+    "details.casualties": 1,
+    "details.lanesBlocked": [
+      "Lane 1",
+      "Lane 2"
+    ],
+    "advisories.type": "Diversion",
+    "advisories.messages": [
+      "Use Exit 10A to Eunos Link",
+      "Avoid Lane 1 and Lane 2 near the exit"
+    ],
+    "responders.agency": "Traffic Police",
+    "responders.arrivalTime": "2025-05-17T07:45:00+08:00",
+    "responders.personnel.name": "Cpl. Lim Hui",
+    "responders.personnel.role": "Traffic Control"
+  },
+  {
+    "incidentId": "INC001",
+    "type": "Accident",
+    "location.road": "PIE",
+    "location.direction": "towards Tuas",
+    "location.landmark": "before Eunos Exit",
+    "time": "2025-05-17T07:35:00+08:00",
+    "status": "Ongoing",
+    "details.vehiclesInvolved.type": "Car",
+    "details.vehiclesInvolved.plateNumber": "SBC1234X",
+    "details.vehiclesInvolved.severity": "Moderate",
+    "details.casualties": 1,
+    "details.lanesBlocked": [
+      "Lane 1",
+      "Lane 2"
+    ],
+    "advisories.type": "Diversion",
+    "advisories.messages": [
+      "Use Exit 10A to Eunos Link",
+      "Avoid Lane 1 and Lane 2 near the exit"
+    ],
+    "responders.agency": "SCDF",
+    "responders.arrivalTime": "2025-05-17T07:50:00+08:00",
+    "responders.personnel.name": "Lt. Ravi Kumar",
+    "responders.personnel.role": "Rescue Operations"
+  },
+  {
+    "incidentId": "INC001",
+    "type": "Accident",
+    "location.road": "PIE",
+    "location.direction": "towards Tuas",
+    "location.landmark": "before Eunos Exit",
+    "time": "2025-05-17T07:35:00+08:00",
+    "status": "Ongoing",
+    "details.vehiclesInvolved.type": "Car",
+    "details.vehiclesInvolved.plateNumber": "SBC1234X",
+    "details.vehiclesInvolved.severity": "Moderate",
+    "details.casualties": 1,
+    "details.lanesBlocked": [
+      "Lane 1",
+      "Lane 2"
+    ],
+    "advisories.type": "Diversion",
+    "advisories.messages": [
+      "Use Exit 10A to Eunos Link",
+      "Avoid Lane 1 and Lane 2 near the exit"
+    ],
+    "responders.agency": "SCDF",
+    "responders.arrivalTime": "2025-05-17T07:50:00+08:00",
+    "responders.personnel.name": "Spec. Ong Jia",
+    "responders.personnel.role": "Paramedic"
+  },
+  {
+    "incidentId": "INC001",
+    "type": "Accident",
+    "location.road": "PIE",
+    "location.direction": "towards Tuas",
+    "location.landmark": "before Eunos Exit",
+    "time": "2025-05-17T07:35:00+08:00",
+    "status": "Ongoing",
+    "details.vehiclesInvolved.type": "Car",
+    "details.vehiclesInvolved.plateNumber": "SBC1234X",
+    "details.vehiclesInvolved.severity": "Moderate",
+    "details.casualties": 1,
+    "details.lanesBlocked": [
+      "Lane 1",
+      "Lane 2"
+    ],
+    "advisories.type": "Congestion Alert",
+    "advisories.messages": [
+      "Expect delays of up to 25 minutes",
+      "Heavy traffic from Kallang Way to Eunos"
+    ],
+    "responders.agency": "Traffic Police",
+    "responders.arrivalTime": "2025-05-17T07:45:00+08:00",
+    "responders.personnel.name": "Sgt. Tan Wei",
+    "responders.personnel.role": "Team Leader"
+  },
+  {
+    "incidentId": "INC001",
+    "type": "Accident",
+    "location.road": "PIE",
+    "location.direction": "towards Tuas",
+    "location.landmark": "before Eunos Exit",
+    "time": "2025-05-17T07:35:00+08:00",
+    "status": "Ongoing",
+    "details.vehiclesInvolved.type": "Car",
+    "details.vehiclesInvolved.plateNumber": "SBC1234X",
+    "details.vehiclesInvolved.severity": "Moderate",
+    "details.casualties": 1,
+    "details.lanesBlocked": [
+      "Lane 1",
+      "Lane 2"
+    ],
+    "advisories.type": "Congestion Alert",
+    "advisories.messages": [
+      "Expect delays of up to 25 minutes",
+      "Heavy traffic from Kallang Way to Eunos"
+    ],
+    "responders.agency": "Traffic Police",
+    "responders.arrivalTime": "2025-05-17T07:45:00+08:00",
+    "responders.personnel.name": "Cpl. Lim Hui",
+    "responders.personnel.role": "Traffic Control"
+  },
+  {
+    "incidentId": "INC001",
+    "type": "Accident",
+    "location.road": "PIE",
+    "location.direction": "towards Tuas",
+    "location.landmark": "before Eunos Exit",
+    "time": "2025-05-17T07:35:00+08:00",
+    "status": "Ongoing",
+    "details.vehiclesInvolved.type": "Car",
+    "details.vehiclesInvolved.plateNumber": "SBC1234X",
+    "details.vehiclesInvolved.severity": "Moderate",
+    "details.casualties": 1,
+    "details.lanesBlocked": [
+      "Lane 1",
+      "Lane 2"
+    ],
+    "advisories.type": "Congestion Alert",
+    "advisories.messages": [
+      "Expect delays of up to 25 minutes",
+      "Heavy traffic from Kallang Way to Eunos"
+    ],
+    "responders.agency": "SCDF",
+    "responders.arrivalTime": "2025-05-17T07:50:00+08:00",
+    "responders.personnel.name": "Lt. Ravi Kumar",
+    "responders.personnel.role": "Rescue Operations"
+  },
+  {
+    "incidentId": "INC001",
+    "type": "Accident",
+    "location.road": "PIE",
+    "location.direction": "towards Tuas",
+    "location.landmark": "before Eunos Exit",
+    "time": "2025-05-17T07:35:00+08:00",
+    "status": "Ongoing",
+    "details.vehiclesInvolved.type": "Car",
+    "details.vehiclesInvolved.plateNumber": "SBC1234X",
+    "details.vehiclesInvolved.severity": "Moderate",
+    "details.casualties": 1,
+    "details.lanesBlocked": [
+      "Lane 1",
+      "Lane 2"
+    ],
+    "advisories.type": "Congestion Alert",
+    "advisories.messages": [
+      "Expect delays of up to 25 minutes",
+      "Heavy traffic from Kallang Way to Eunos"
+    ],
+    "responders.agency": "SCDF",
+    "responders.arrivalTime": "2025-05-17T07:50:00+08:00",
+    "responders.personnel.name": "Spec. Ong Jia",
+    "responders.personnel.role": "Paramedic"
+  },
+  {
+    "incidentId": "INC001",
+    "type": "Accident",
+    "location.road": "PIE",
+    "location.direction": "towards Tuas",
+    "location.landmark": "before Eunos Exit",
+    "time": "2025-05-17T07:35:00+08:00",
+    "status": "Ongoing",
+    "details.vehiclesInvolved.type": "Motorcycle",
+    "details.vehiclesInvolved.plateNumber": "FBA5678Z",
+    "details.vehiclesInvolved.severity": "High",
+    "details.casualties": 1,
+    "details.lanesBlocked": [
+      "Lane 1",
+      "Lane 2"
+    ],
+    "advisories.type": "Diversion",
+    "advisories.messages": [
+      "Use Exit 10A to Eunos Link",
+      "Avoid Lane 1 and Lane 2 near the exit"
+    ],
+    "responders.agency": "Traffic Police",
+    "responders.arrivalTime": "2025-05-17T07:45:00+08:00",
+    "responders.personnel.name": "Sgt. Tan Wei",
+    "responders.personnel.role": "Team Leader"
+  },
+  {
+    "incidentId": "INC001",
+    "type": "Accident",
+    "location.road": "PIE",
+    "location.direction": "towards Tuas",
+    "location.landmark": "before Eunos Exit",
+    "time": "2025-05-17T07:35:00+08:00",
+    "status": "Ongoing",
+    "details.vehiclesInvolved.type": "Motorcycle",
+    "details.vehiclesInvolved.plateNumber": "FBA5678Z",
+    "details.vehiclesInvolved.severity": "High",
+    "details.casualties": 1,
+    "details.lanesBlocked": [
+      "Lane 1",
+      "Lane 2"
+    ],
+    "advisories.type": "Diversion",
+    "advisories.messages": [
+      "Use Exit 10A to Eunos Link",
+      "Avoid Lane 1 and Lane 2 near the exit"
+    ],
+    "responders.agency": "Traffic Police",
+    "responders.arrivalTime": "2025-05-17T07:45:00+08:00",
+    "responders.personnel.name": "Cpl. Lim Hui",
+    "responders.personnel.role": "Traffic Control"
+  },
+  {
+    "incidentId": "INC001",
+    "type": "Accident",
+    "location.road": "PIE",
+    "location.direction": "towards Tuas",
+    "location.landmark": "before Eunos Exit",
+    "time": "2025-05-17T07:35:00+08:00",
+    "status": "Ongoing",
+    "details.vehiclesInvolved.type": "Motorcycle",
+    "details.vehiclesInvolved.plateNumber": "FBA5678Z",
+    "details.vehiclesInvolved.severity": "High",
+    "details.casualties": 1,
+    "details.lanesBlocked": [
+      "Lane 1",
+      "Lane 2"
+    ],
+    "advisories.type": "Diversion",
+    "advisories.messages": [
+      "Use Exit 10A to Eunos Link",
+      "Avoid Lane 1 and Lane 2 near the exit"
+    ],
+    "responders.agency": "SCDF",
+    "responders.arrivalTime": "2025-05-17T07:50:00+08:00",
+    "responders.personnel.name": "Lt. Ravi Kumar",
+    "responders.personnel.role": "Rescue Operations"
+  },
+  {
+    "incidentId": "INC001",
+    "type": "Accident",
+    "location.road": "PIE",
+    "location.direction": "towards Tuas",
+    "location.landmark": "before Eunos Exit",
+    "time": "2025-05-17T07:35:00+08:00",
+    "status": "Ongoing",
+    "details.vehiclesInvolved.type": "Motorcycle",
+    "details.vehiclesInvolved.plateNumber": "FBA5678Z",
+    "details.vehiclesInvolved.severity": "High",
+    "details.casualties": 1,
+    "details.lanesBlocked": [
+      "Lane 1",
+      "Lane 2"
+    ],
+    "advisories.type": "Diversion",
+    "advisories.messages": [
+      "Use Exit 10A to Eunos Link",
+      "Avoid Lane 1 and Lane 2 near the exit"
+    ],
+    "responders.agency": "SCDF",
+    "responders.arrivalTime": "2025-05-17T07:50:00+08:00",
+    "responders.personnel.name": "Spec. Ong Jia",
+    "responders.personnel.role": "Paramedic"
+  },
+  {
+    "incidentId": "INC001",
+    "type": "Accident",
+    "location.road": "PIE",
+    "location.direction": "towards Tuas",
+    "location.landmark": "before Eunos Exit",
+    "time": "2025-05-17T07:35:00+08:00",
+    "status": "Ongoing",
+    "details.vehiclesInvolved.type": "Motorcycle",
+    "details.vehiclesInvolved.plateNumber": "FBA5678Z",
+    "details.vehiclesInvolved.severity": "High",
+    "details.casualties": 1,
+    "details.lanesBlocked": [
+      "Lane 1",
+      "Lane 2"
+    ],
+    "advisories.type": "Congestion Alert",
+    "advisories.messages": [
+      "Expect delays of up to 25 minutes",
+      "Heavy traffic from Kallang Way to Eunos"
+    ],
+    "responders.agency": "Traffic Police",
+    "responders.arrivalTime": "2025-05-17T07:45:00+08:00",
+    "responders.personnel.name": "Sgt. Tan Wei",
+    "responders.personnel.role": "Team Leader"
+  },
+  {
+    "incidentId": "INC001",
+    "type": "Accident",
+    "location.road": "PIE",
+    "location.direction": "towards Tuas",
+    "location.landmark": "before Eunos Exit",
+    "time": "2025-05-17T07:35:00+08:00",
+    "status": "Ongoing",
+    "details.vehiclesInvolved.type": "Motorcycle",
+    "details.vehiclesInvolved.plateNumber": "FBA5678Z",
+    "details.vehiclesInvolved.severity": "High",
+    "details.casualties": 1,
+    "details.lanesBlocked": [
+      "Lane 1",
+      "Lane 2"
+    ],
+    "advisories.type": "Congestion Alert",
+    "advisories.messages": [
+      "Expect delays of up to 25 minutes",
+      "Heavy traffic from Kallang Way to Eunos"
+    ],
+    "responders.agency": "Traffic Police",
+    "responders.arrivalTime": "2025-05-17T07:45:00+08:00",
+    "responders.personnel.name": "Cpl. Lim Hui",
+    "responders.personnel.role": "Traffic Control"
+  },
+  {
+    "incidentId": "INC001",
+    "type": "Accident",
+    "location.road": "PIE",
+    "location.direction": "towards Tuas",
+    "location.landmark": "before Eunos Exit",
+    "time": "2025-05-17T07:35:00+08:00",
+    "status": "Ongoing",
+    "details.vehiclesInvolved.type": "Motorcycle",
+    "details.vehiclesInvolved.plateNumber": "FBA5678Z",
+    "details.vehiclesInvolved.severity": "High",
+    "details.casualties": 1,
+    "details.lanesBlocked": [
+      "Lane 1",
+      "Lane 2"
+    ],
+    "advisories.type": "Congestion Alert",
+    "advisories.messages": [
+      "Expect delays of up to 25 minutes",
+      "Heavy traffic from Kallang Way to Eunos"
+    ],
+    "responders.agency": "SCDF",
+    "responders.arrivalTime": "2025-05-17T07:50:00+08:00",
+    "responders.personnel.name": "Lt. Ravi Kumar",
+    "responders.personnel.role": "Rescue Operations"
+  },
+  {
+    "incidentId": "INC001",
+    "type": "Accident",
+    "location.road": "PIE",
+    "location.direction": "towards Tuas",
+    "location.landmark": "before Eunos Exit",
+    "time": "2025-05-17T07:35:00+08:00",
+    "status": "Ongoing",
+    "details.vehiclesInvolved.type": "Motorcycle",
+    "details.vehiclesInvolved.plateNumber": "FBA5678Z",
+    "details.vehiclesInvolved.severity": "High",
+    "details.casualties": 1,
+    "details.lanesBlocked": [
+      "Lane 1",
+      "Lane 2"
+    ],
+    "advisories.type": "Congestion Alert",
+    "advisories.messages": [
+      "Expect delays of up to 25 minutes",
+      "Heavy traffic from Kallang Way to Eunos"
+    ],
+    "responders.agency": "SCDF",
+    "responders.arrivalTime": "2025-05-17T07:50:00+08:00",
+    "responders.personnel.name": "Spec. Ong Jia",
+    "responders.personnel.role": "Paramedic"
+  }
+]
