@@ -1,5 +1,5 @@
 [
-  {
+     {
     "incidentId": "INC001",
     "type": "Accident",
     "location": {
@@ -45,5 +45,53 @@
         ]
       }
     ]
+  },
+  {
+    "incidentId": "INC002",
+    "type": "Accident",
+    "location": {
+      "road": "AYE",
+      "direction": "towards Tuas",
+      "landmark": "before Eunos Exit"
+    },
+    "time": "2025-05-17T07:35:00+08:00",
+    "status": "Ongoing",
+    "details": {
+      "vehiclesInvolved": [
+        { "type": "Train", "plateNumber": "SBC1234X", "severity": "Moderate" },
+        { "type": "Truck", "plateNumber": "FBA5678Z", "severity": "High" }
+      ],
+      "casualties": 1,
+      "lanesBlocked": "Lane 1, Lane 2"
+    },
+    "advisories": [
+      {
+        "type": "Diversion",
+        "message": "Use Exit 10A to Eunos Link"
+      },
+      {
+        "type": "Congestion Alert",
+        "message": "Expect delays of up to 25 minutes"
+      }
+    ],
+    "responders": [
+      {
+        "agency": "Special Operations Command",
+        "arrivalTime": "2025-05-17T07:45:00+08:00",
+        "personnel": [
+          { "name": "Sgt. Tan Wei", "role": "Team Leader" },
+          { "name": "Cpl. Lim Hui", "role": "Traffic Control" }
+        ]
+      },
+      {
+        "agency": "Other Agency",
+        "arrivalTime": "2025-05-17T07:50:00+08:00",
+        "personnel": [
+          { "name": "Lt. Ravi Kumar", "role": "Rescue Operations" },
+          { "name": "Spec. Ong Jia", "role": "Paramedic" }
+        ]
+      }
+    ]
   }
+ 
 ]

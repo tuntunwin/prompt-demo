@@ -1,5 +1,6 @@
 import * as XLSX from 'xlsx';
 import fs from 'fs';
+import { deduplicateRowFieldsByParent } from './deduplicateRowFields.js';
 
 // Configuration for fields to include
 const config = {
@@ -12,9 +13,6 @@ const config = {
     "type",
     "time",
     "status",
-    "responders.arrivalTime",
-    "responders.personnel.name",
-    "responders.personnel.role",
     "details.vehiclesInvolved.type",
     "details.vehiclesInvolved.plateNumber",
     "details.vehiclesInvolved.severity",
@@ -22,7 +20,10 @@ const config = {
     "details.lanesBlocked",
     "advisories.type",
     "advisories.messages",
-    "responders.agency"
+    "responders.agency",
+     "responders.arrivalTime",
+    "responders.personnel.name",
+    "responders.personnel.role",
     
   ]
 };
@@ -226,19 +227,22 @@ function jsonToExcel(data, config, outputFile) {
 
 // Example usage
 const inputData = JSON.parse(fs.readFileSync('input.json', 'utf8'));
-jsonToExcel(inputData, config, 'output.xlsx');
-
-// Read the output.json file
-const { header, rows } = JSON.parse(fs.readFileSync('./output.json', 'utf-8'));
-
-// Convert rows to worksheet
-const worksheet = XLSX.utils.json_to_sheet(rows, { header });
-
-// Create a new workbook and append the worksheet
+// If inputData is an array, flatten all records, not just the first
+let allRows = inputData.flatMap(item => expandAllRows([item], config));
+// Deduplicate field values within each parent (incidentId)
+allRows = deduplicateRowFieldsByParent(allRows, config.fields, 'incidentId');
+// Prepare header
+const header = config.fields;
+// Prepare data rows
+const rows = [header];
+for (const rowObj of allRows) {
+  const row = header.map(field => rowObj[field] !== undefined ? rowObj[field] : '');
+  rows.push(row);
+}
+// Create worksheet and workbook
+const worksheet = XLSX.utils.aoa_to_sheet(rows);
 const workbook = XLSX.utils.book_new();
 XLSX.utils.book_append_sheet(workbook, worksheet, 'Report');
-
-// Write the workbook to output.xlsx
-XLSX.writeFile(workbook, './output.xlsx');
-
+// Write to file
+XLSX.writeFile(workbook, 'output.xlsx');
 console.log('Exported to output.xlsx');
