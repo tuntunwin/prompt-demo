@@ -20,11 +20,11 @@
     "advisories": [
       {
         "type": "Diversion",
-        "messages": ["Use Exit 10A to Eunos Link", "Avoid Lane 1 and Lane 2 near the exit"]
+        "message": "Use Exit 10A to Eunos Link"
       },
       {
         "type": "Congestion Alert",
-        "messages": ["Expect delays of up to 25 minutes", "Heavy traffic from Kallang Way to Eunos"]
+        "message": "Expect delays of up to 25 minutes"
       }
     ],
     "responders": [

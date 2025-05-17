@@ -1,40 +1,31 @@
-const fs = require('fs');
-const path = require('path');
-const generateReportRows = require('./generate_report_rows');
+import fs from 'fs';
 
-// Configuration JSON
-const config = {
-  fields: [
-    "incidentId",
-    "type",
-    "location.road",
-    "location.direction",
-    "location.landmark",
-    "time",
-    "status",
-    "details.vehiclesInvolved.type",
-    "details.vehiclesInvolved.plateNumber",
-    "details.vehiclesInvolved.severity",
-    "details.casualties",
-    "details.lanesBlocked",
-    "advisories.type",
-    "advisories.messages",
-    "responders.agency",
-    "responders.arrivalTime",
-    "responders.personnel.name",
-    "responders.personnel.role"
-  ]
-};
+const { flattenReport } = await import('./generate_report_rows.js');
 
-// Read input data
-const inputPath = path.join(__dirname, 'input.json');
-const inputData = JSON.parse(fs.readFileSync(inputPath, 'utf8'));
+const data = JSON.parse(fs.readFileSync('./input.json', 'utf-8'));
 
-// Generate report rows
-const reportRows = generateReportRows(inputData, config);
+const configFields = [
+  "incidentId",
+  "type",
+  "location.road",
+  "location.direction",
+  "location.landmark",
+  "time",
+  "status",
+  "advisories.type",
+  "advisories.message",
+  "details.vehiclesInvolved.type",
+  "details.vehiclesInvolved.plateNumber",
+  "details.vehiclesInvolved.severity",
+  "details.casualties",
+  "details.lanesBlocked",
+  "responders.agency",
+  "responders.arrivalTime",
+  "responders.personnel.name",
+  "responders.personnel.role"
+];
+const reportRows = flattenReport(data, configFields);
+//Save the report rows to a file
+fs.writeFileSync('./output.json', JSON.stringify(reportRows, null, 2));
 
-// Output result as JSON (for demonstration)
-const outputPath = path.join(__dirname, 'report.json');
-fs.writeFileSync(outputPath, JSON.stringify(reportRows, null, 2), 'utf8');
-
-console.log(`Report generated: ${outputPath}`);
+//console.log(reportRows);
