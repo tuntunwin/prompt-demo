@@ -262,6 +262,47 @@ function flattenObjectDedup(obj, fields, parentKey, seen = {}, prefix = '', pare
   return [row];
 }
 
+// Merge as many unrelated child fields as possible into the same row, but only within the same parent record
+function mergeRowsForParent(flatRows, header, parentKey) {
+  // Group rows by parentKey
+  const grouped = {};
+  for (const row of flatRows) {
+    const key = row[parentKey] || '__NO_PARENT__';
+    if (!grouped[key]) grouped[key] = [];
+    grouped[key].push(row);
+  }
+  const mergedRows = [];
+  for (const groupRows of Object.values(grouped)) {
+    // Greedy merge: try to merge as many rows as possible if their non-empty fields do not overlap
+    const used = new Array(groupRows.length).fill(false);
+    for (let i = 0; i < groupRows.length; i++) {
+      if (used[i]) continue;
+      let merged = { ...groupRows[i] };
+      used[i] = true;
+      for (let j = i + 1; j < groupRows.length; j++) {
+        if (used[j]) continue;
+        let canMerge = true;
+        for (const field of header) {
+          if ((merged[field] && merged[field] !== '') && (groupRows[j][field] && groupRows[j][field] !== '')) {
+            canMerge = false;
+            break;
+          }
+        }
+        if (canMerge) {
+          for (const field of header) {
+            if (!merged[field] || merged[field] === '') {
+              merged[field] = groupRows[j][field];
+            }
+          }
+          used[j] = true;
+        }
+      }
+      mergedRows.push(merged);
+    }
+  }
+  return mergedRows;
+}
+
 // Main function to convert JSON to Excel
 function jsonToExcel(data, config, outputFile) {
   // Expand all rows
@@ -289,7 +330,11 @@ const inputData = JSON.parse(fs.readFileSync('input.json', 'utf8'));
 const header = config.fields;
 let allRows = [];
 for (const item of inputData) {
-  allRows = allRows.concat(flattenObjectDedup(item, header, 'incidentId'));
+  // Flatten and deduplicate for this parent only
+  let parentRows = flattenObjectDedup(item, header, 'incidentId');
+  // Merge only within this parent
+  parentRows = mergeRowsForParent(parentRows, header, 'incidentId');
+  allRows = allRows.concat(parentRows);
 }
 const rows = [header];
 for (const rowObj of allRows) {
