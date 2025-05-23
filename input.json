@@ -41,7 +41,7 @@
         "arrivalTime": "2025-05-17T07:50:00+08:00",
         "personnel": [
           { "name": "Lt. Ravi Kumar", "role": "Rescue Operations" },
-          { "name": "Spec. Ong Jia", "role": "Paramedic" }
+          { "name": "Spec. Ong Jia", "role": "Rescue Operations" }
         ]
       }
     ]
@@ -76,19 +76,19 @@
     ],
     "responders": [
       {
-        "agency": "Special Operations Command",
+        "agency": "SCDF",
         "arrivalTime": "2025-05-17T07:45:00+08:00",
         "personnel": [
-          { "name": "Sgt. Tan Wei", "role": "Team Leader" },
-          { "name": "Cpl. Lim Hui", "role": "Traffic Control" }
+          { "name": "Sgt. Tan Wei", "role": "Rescue Operations" },
+          { "name": "Cpl. Lim Hui", "role": "Rescue Operations" }
         ]
       },
       {
-        "agency": "Other Agency",
+        "agency": "Traffic Police",
         "arrivalTime": "2025-05-17T07:50:00+08:00",
         "personnel": [
           { "name": "Lt. Ravi Kumar", "role": "Rescue Operations" },
-          { "name": "Spec. Ong Jia", "role": "Paramedic" }
+          { "name": "Spec. Ong Jia", "role": "Rescue Operations" }
         ]
       }
     ]
