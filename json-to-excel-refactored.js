@@ -301,18 +301,24 @@ class ReportGenerator {
     this.flattener = new ObjectFlattener(config.fields, config.parentKey);
     this.merger = new RowMerger(config.fields, config.parentKey);
   }
-
   async generateReport() {
     const data = this.loadData();
     const processedRows = this.processData(data);
     const filteredRows = this.filterEmptyRows(processedRows);
     this.exportToExcel(filteredRows);
+    this.saveRowsToJson(filteredRows);
     
     return {
       totalProcessed: data.length,
       outputRows: filteredRows.length,
       outputFile: this.config.outputFile
     };
+  }
+
+  saveRowsToJson(rows) {
+    const jsonFileName = this.config.outputFile.replace('.xlsx', '-rows.json');
+    fs.writeFileSync(jsonFileName, JSON.stringify(rows, null, 2));
+    console.log(`Rows saved to ${jsonFileName}`);
   }
 
   loadData() {
