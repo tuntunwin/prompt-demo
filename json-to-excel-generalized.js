@@ -4,15 +4,15 @@ import fs from 'fs';
 // Fields to include in the report (dot notation for nested fields)
 const FIELDS = [
   'incidentId','type', 'time', 'status','location.road', 'location.direction', 'location.landmark',
-   
-  'details.vehiclesInvolved.type',
+   'details.vehiclesInvolved.type',
   'details.vehiclesInvolved.plateNumber.serial',
   'details.vehiclesInvolved.plateNumber.region',
   'details.vehiclesInvolved.severity',
   'details.casualties', 'details.lanesBlocked',
   'advisories.type', 'advisories.message',
-  'responders.agency', 'responders.arrivalTime',
+   'responders.agency', 'responders.arrivalTime',
   'responders.personnel.name', 'responders.personnel.role',
+ 
 ];
 
 // Flattens a parent object into deduplicated child rows (per parent group)
