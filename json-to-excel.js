@@ -3,8 +3,8 @@ import fs from 'fs';
 
 // Fields to include in the report (dot notation for nested fields)
 const FIELDS = [
-  'location.road', 'location.direction', 'location.landmark',
-  'incidentId', 'type', 'time', 'status',
+  'incidentId','type', 'time', 'status','location.road', 'location.direction', 'location.landmark',
+   
   'details.vehiclesInvolved.type',
   'details.vehiclesInvolved.plateNumber.serial',
   'details.vehiclesInvolved.plateNumber.region',
@@ -17,12 +17,39 @@ const FIELDS = [
 
 // Flattens a parent object into deduplicated child rows (per parent group)
 function flattenAndDedup(obj, fields, parentKey) {
-  let seen = {};
+  let ownerSeen = new Map(); // Map to track seen values per owner object
+  
+  function getOwnerKey(o, field) {
+    // Create a unique key for the owner object based on the field path
+    const parts = field.split('.');
+    let owner = o;
+    let ownerPath = [];
+    
+    // Navigate to find the owner object (the object that contains this field)
+    for (let i = 0; i < parts.length - 1; i++) {
+      if (owner && typeof owner === 'object' && !Array.isArray(owner)) {
+        ownerPath.push(parts[i]);
+        owner = owner[parts[i]];
+      }
+    }
+    
+    // If we have an owner object, create a unique key for it
+    if (owner && typeof owner === 'object') {
+      // Use the object's unique properties to create a key
+      const keyProps = JSON.stringify(owner);
+      return `${ownerPath.join('.')}_${keyProps}`;
+    }
+    
+    // Fallback to field path if no clear owner
+    return field;
+  }
+  
   function recurse(o, parent = {}, parentValue = null) {
     if (parentValue === null && o[parentKey]) {
-      seen = {};
+      ownerSeen.clear(); // Reset for each parent group
       parentValue = o[parentKey];
     }
+    
     // Find first array in fields
     for (const field of fields) {
       const parts = field.split('.');
@@ -40,16 +67,29 @@ function flattenAndDedup(obj, fields, parentKey) {
         });
       }
     }
-    // No arrays left, output a row with inline deduplication
+    
+    // No arrays left, output a row with owner-based deduplication
     const row = { ...parent };
     for (const field of fields) {
       const parts = field.split('.');
       let value = o;
       for (const part of parts) value = value && value[part];
       if (Array.isArray(value)) value = value.join(', ');
-      if (!seen[field]) seen[field] = new Set();
-      row[field] = value && seen[field].has(value) ? '' : (value ?? '');
-      if (value && !seen[field].has(value)) seen[field].add(value);
+      
+      if (value) {
+        const ownerKey = getOwnerKey(o, field);
+        const fieldKey = `${ownerKey}_${field}`;
+        
+        if (!ownerSeen.has(fieldKey)) {
+          ownerSeen.set(fieldKey, new Set());
+        }
+        
+        const seenValues = ownerSeen.get(fieldKey);
+        row[field] = seenValues.has(value) ? '' : value;
+        seenValues.add(value);
+      } else {
+        row[field] = value ?? '';
+      }
     }
     return [row];
   }
