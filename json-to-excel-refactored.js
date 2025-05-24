@@ -21,7 +21,7 @@ const CONFIG = {
   ],
   parentKey: 'incidentId',
   inputFile: 'input.json',
-  outputFile: 'output-refactored.xlsx',
+  outputFile: 'output-refactored.xlsx', 
   worksheetName: 'Report'
 };
 
