@@ -1,26 +1,31 @@
 import * as XLSX from 'xlsx';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
-import { dirname } from 'path';
+import { dirname, join } from 'path';
+
+/**
+ * Load configuration fields from config.json
+ */
+function loadConfigFields() {
+  try {
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = dirname(__filename);
+    const configPath = join(__dirname, 'test_config.json');
+    const configData = fs.readFileSync(configPath, 'utf8');
+    return JSON.parse(configData);
+  } catch (error) {
+    console.error('Error loading config.json:', error.message);
+    throw new Error('Failed to load configuration fields from config.json');
+  }
+}
 
 /**
  * Configuration for the report generator
  */
 const CONFIG = {
-  fields: [
-    'incidentId', 'type', 'time', 'status',
-    'location.road', 'location.direction', 'location.landmark',
-    'details.vehiclesInvolved.type',
-    'details.vehiclesInvolved.plateNumber.serial',
-    'details.vehiclesInvolved.plateNumber.region',
-    'details.vehiclesInvolved.severity',
-    'details.casualties', 'details.lanesBlocked',
-    'advisories.type', 'advisories.message',
-    'responders.agency', 'responders.arrivalTime',
-    'responders.personnel.name', 'responders.personnel.role'
-  ],
-  parentKey: 'incidentId',
-  inputFile: 'input.json',
+  fields: loadConfigFields(),
+  parentKey: 'employeeId',
+  inputFile: 'test_input.json',
   outputFile: 'output-refactored.xlsx', 
   worksheetName: 'Report'
 };

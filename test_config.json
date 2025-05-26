@@ -1,0 +1,19 @@
+[
+    "employeeId",
+    "firstName",
+    "personalInfo.dateOfBirth",
+    "personalInfo.phoneNumber",
+    "personalInfo.emergencyContact",
+    "lastName",
+    "email",
+    "performanceReviews.reviewId",
+    "performanceReviews.reviewDate",
+    "performanceReviews.metrics.metricName",
+    "performanceReviews.metrics.scores",
+    "skills.skillName",
+    "skills.proficiencyLevel",
+    "trainingHistory.courseName",
+    "trainingHistory.completionDate",
+    "trainingHistory.certifications.certificationName",
+    "trainingHistory.certifications.issueDate"
+  ]
