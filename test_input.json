@@ -10,32 +10,30 @@
     "lastName": "Johnson",
     "email": "sarah.johnson@company.com",
     
-      "performanceReviews": [
-        {
+      "performanceReviews": [        {
           "reviewId": "REV-2024-Q1",
           "metrics": [
             {
-              "metricName": "Communication 1",
+              "metricName": "Communication",
               "scores":2.0
             },
             {
-              "metricName": "Communication 2",
-              "scores": 3.0
+              "metricName": "Communication",
+              "scores": 2.0
             }
 
           ],
           "reviewDate": "2024-03-15"
-        },
-         {
+        },         {
           "reviewId": "REV-2024-Q2",
           "metrics": [
             {
-              "metricName": "Communication 3",
+              "metricName": "Communication",
               "scores":2.0
             },
             {
-              "metricName": "Communication 4",
-              "scores": 3.0
+              "metricName": "Communication",
+              "scores": 2.0
             }
 
           ],
@@ -130,6 +128,10 @@
         "courseName": "Diversity and Inclusion Workshop",
         "completionDate": "2024-01-10",
         "certifications": [
+          {
+            "certificationName": "PHR Certification",
+            "issueDate": "2023-08-15"
+          },
           {
             "certificationName": "PHR Certification",
             "issueDate": "2023-08-15"

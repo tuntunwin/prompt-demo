@@ -64,63 +64,115 @@ class ObjectUtils {
 }
 
 /**
- * Handles deduplication logic for rows
+ * Handles preprocessing to add unique IDs to child objects
+ */
+class ObjectPreprocessor {
+  constructor() {
+    this.uniqueIdCounter = 0;
+  }
+
+  reset() {
+    this.uniqueIdCounter = 0;
+  }
+
+  /**
+   * Add unique IDs to all child objects before flattening
+   */
+  addUniqueIds(obj) {
+    this.reset();
+    return this.addUniqueIdsRecursive(JSON.parse(JSON.stringify(obj))); // Deep clone
+  }
+
+  addUniqueIdsRecursive(obj) {
+    if (!obj || typeof obj !== 'object') {
+      return obj;
+    }
+
+    if (Array.isArray(obj)) {
+      // For arrays, add unique ID to each item
+      return obj.map(item => {
+        if (typeof item === 'object' && item !== null) {
+          item.__objectId = ++this.uniqueIdCounter;
+          return this.addUniqueIdsRecursive(item);
+        }
+        return item;
+      });
+    }
+
+    // For objects, process all properties
+    Object.keys(obj).forEach(key => {
+      if (Array.isArray(obj[key])) {
+        obj[key] = this.addUniqueIdsRecursive(obj[key]);
+      } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+        obj[key] = this.addUniqueIdsRecursive(obj[key]);
+      }
+    });
+
+    return obj;
+  }
+}
+
+/**
+ * Handles deduplication logic for rows using object IDs
  */
 class DeduplicationManager {
-  constructor() {
+  constructor(parentKey) {
     this.seenValues = new Map();
+    this.parentKey = parentKey;
   }
 
   reset() {
     this.seenValues.clear();
   }
 
-  shouldShowValue(ownerKey, field, value) {
-    const key = `${ownerKey}_${field}`;
-    
-    if (!this.seenValues.has(key)) {
-      this.seenValues.set(key, new Set());
-    }
-    
-    const seenSet = this.seenValues.get(key);
-    const isNew = !seenSet.has(value);
-    
-    if (isNew) {
-      seenSet.add(value);
-    }
-    
-    return isNew;
-  }
-
-  createOwnerKey(obj, field, fields) {
+  /**
+   * Determines if a field belongs to the root object based on nesting level
+   */
+  isRootObjectField(field) {
     const parts = field.split('.');
     
-    if (parts.length <= 1) return 'root';
+    // Single level fields are root fields
+    if (parts.length === 1) {
+      return true;
+    }
     
-    const parentPath = parts.slice(0, -1);
-    const signature = this.createObjectSignature(obj, parentPath, fields);
+    // Two level fields might be root fields (like personalInfo.*)
+    // We assume fields with 2 or fewer parts that don't come from arrays are root fields
+    if (parts.length === 2) {
+      return true;
+    }
     
-    return `${parentPath.join('.')}_${JSON.stringify(signature)}`;
+    // Everything else is from nested arrays/objects
+    return false;
   }
 
-  createObjectSignature(obj, path, fields) {
-    const target = path.reduce((current, key) => current?.[key], obj);
-    if (!target || typeof target !== 'object') return {};
-    
-    const signature = {};
-    const pathPrefix = path.join('.');
-    
-    fields
-      .filter(f => f.startsWith(pathPrefix + '.'))
-      .forEach(field => {
-        const fieldName = field.split('.').pop();
-        const value = target[fieldName];
-        if (value !== undefined && !Array.isArray(value)) {
-          signature[field] = value;
-        }
-      });
-    
-    return signature;
+  shouldShowValue(field, value, objectId, parentIdValue) {
+    // For root object fields, deduplicate per parent instance
+    if (this.isRootObjectField(field)) {
+      const key = `parent_${parentIdValue}_${field}`;
+      if (!this.seenValues.has(key)) {
+        this.seenValues.set(key, new Set());
+      }
+      const seenSet = this.seenValues.get(key);
+      const isNew = !seenSet.has(value);
+      if (isNew) seenSet.add(value);
+      return isNew;
+    }
+
+    // For child object fields, deduplicate per object ID
+    if (objectId) {
+      const key = `object_${objectId}_${field}`;
+      if (!this.seenValues.has(key)) {
+        this.seenValues.set(key, new Set());
+      }
+      const seenSet = this.seenValues.get(key);
+      const isNew = !seenSet.has(value);
+      if (isNew) seenSet.add(value);
+      return isNew;
+    }
+
+    // Fallback: show the value
+    return true;
   }
 }
 
@@ -131,12 +183,20 @@ class ObjectFlattener {
   constructor(fields, parentKey) {
     this.fields = fields;
     this.parentKey = parentKey;
-    this.deduplicationManager = new DeduplicationManager();
+    this.deduplicationManager = new DeduplicationManager(parentKey);
+    this.preprocessor = new ObjectPreprocessor();
   }
 
   flatten(obj) {
     this.deduplicationManager.reset();
-    return this.flattenRecursive(obj);
+    
+    // First, add unique IDs to all child objects
+    const preprocessedObj = this.preprocessor.addUniqueIds(obj);
+    
+    // Then flatten the object
+    const result = this.flattenRecursive(preprocessedObj);
+    console.log(`Raw rows generated: ${result.length}`);
+    return result;
   }
 
   flattenRecursive(obj, parentData = {}) {
@@ -145,7 +205,7 @@ class ObjectFlattener {
     
     if (arrayField) {
       const { field, arrayRef, arrayIndex } = arrayField;
-      return arrayRef.flatMap(item => {
+      return arrayRef.flatMap((item, itemIndex) => {
         const newObj = this.replaceArrayWithItem(obj, field, arrayIndex, item);
         return this.flattenRecursive(newObj, parentData);
       });
@@ -185,24 +245,47 @@ class ObjectFlattener {
 
   createRow(obj, parentData) {
     const row = { ...parentData };
+    const parentIdValue = obj[this.parentKey] || 'unknown';
     
     this.fields.forEach(field => {
       let value = ObjectUtils.getNestedValue(obj, field);
-      
       if (Array.isArray(value)) {
         value = value.join(', ');
       }
       
-      if (value) {
-        const ownerKey = this.deduplicationManager.createOwnerKey(obj, field, this.fields);
-        const shouldShow = this.deduplicationManager.shouldShowValue(ownerKey, field, value);
+      if (value !== undefined && value !== null) {
+        // Get the object ID from the object that contains this field
+        const objectId = this.getObjectIdForField(obj, field);
+        
+        // Apply deduplication
+        const shouldShow = this.deduplicationManager.shouldShowValue(field, value, objectId, parentIdValue);
         row[field] = shouldShow ? value : '';
       } else {
-        row[field] = value ?? '';
+        row[field] = '';
       }
     });
     
     return row;
+  }
+
+  /**
+   * Get the object ID for the object that contains the given field
+   */
+  getObjectIdForField(obj, field) {
+    const parts = field.split('.');
+    let current = obj;
+    
+    // Navigate to the object that contains this field
+    for (let i = 0; i < parts.length - 1; i++) {
+      if (current && typeof current === 'object') {
+        current = current[parts[i]];
+      } else {
+        break;
+      }
+    }
+    
+    // Return the object ID if it exists
+    return current && typeof current === 'object' ? current.__objectId : null;
   }
 }
 
@@ -332,9 +415,7 @@ class ReportGenerator {
     } catch (error) {
       throw new Error(`Failed to load data from ${this.config.inputFile}: ${error.message}`);
     }
-  }
-
-  processData(data) {
+  }  processData(data) {
     let totalRowsBeforeMerge = 0;
     const allRows = [];
     
