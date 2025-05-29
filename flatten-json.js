@@ -22,34 +22,31 @@ function getAllFields(obj, parent = '') {
 }
 
 // Walk and fill as per pseudo code
-function walkAndFill(item, row, parentField, parentStatusField, fieldStatusMap, itemIndex = -1) {
+function walkAndFill(item, row, fieldStatusMap, parentField = null, parentStatusField=null, currentItemIndex = null) {
     let hasMoreItems = false;
+    
     for (const key in item) {
         const value = item[key];
         const rowField = parentField ? `${parentField}.${key}` : key;
         const statusFieldPrefix = parentStatusField ? `${parentStatusField}.` : '';
-        const statusField = itemIndex == -1 ? `${statusFieldPrefix}${key}` : `${statusFieldPrefix}${itemIndex}.${key}`;
+        const statusField = currentItemIndex ? `${statusFieldPrefix}${key}` : `${statusFieldPrefix}${currentItemIndex}.${key}`;
+        
         if (!(statusField in fieldStatusMap) || fieldStatusMap[statusField] !== -1) {
             if (Array.isArray(value)) {
-                let itemIndex = fieldStatusMap[statusField] || 0;
+                const arrayIndex = fieldStatusMap[statusField] || 0;
                 
-                if (itemIndex >= 0 && itemIndex < value.length) {
-                    let nextIndex = itemIndex;
-                   let hasMoreItemsInCurrentIndex = walkAndFill(value[itemIndex],  row, rowField, statusField, fieldStatusMap, itemIndex);
-                   if (!hasMoreItemsInCurrentIndex) {
-                       // If no more items in this index, mark as done
-                       nextIndex = (itemIndex + 1 < value.length) ? itemIndex + 1 : -1;
-                       fieldStatusMap[statusField] = nextIndex;
-                       
-                   }
-                   hasMoreItems ||= nextIndex != -1;
+                if (arrayIndex < value.length) {
+                    const hasMoreItemsInArray = walkAndFill(value[arrayIndex], row, fieldStatusMap, rowField, statusField, arrayIndex);
+                    
+                    if (!hasMoreItemsInArray) {
+                        fieldStatusMap[statusField] = (arrayIndex + 1 < value.length) ? arrayIndex + 1 : -1;
+                    }
+                    
+                    hasMoreItems = hasMoreItems || fieldStatusMap[statusField] !== -1;
                 } 
-            }
-            else if (typeof value === 'object') {
-                hasMoreItems ||= walkAndFill(value, row, rowField, statusField, fieldStatusMap);
-            }
-            
-            else  {
+            } else if (value && typeof value === 'object') {
+                hasMoreItems = walkAndFill(value, row, fieldStatusMap, rowField, statusField) || hasMoreItems;
+            } else {
                 // Scalar value
                 row[rowField] = value;
                 fieldStatusMap[statusField] = -1;
@@ -62,20 +59,20 @@ function walkAndFill(item, row, parentField, parentStatusField, fieldStatusMap, 
 // Main flatten function
 function flattenJsonArray(items) {
     if (!items.length) return [];
+    
     const allFields = getAllFields(items[0]);
     const rows = [];
+    
     for (const item of items) {
         const fieldStatusMap = {};
-        let hasMoreItems = false;
-        let iteration = 0;
-        do {
+        let hasMoreItems = true;
+        
+        while (hasMoreItems) {
             const row = {};
-            allFields.forEach(f => row[f] = null);
-            hasMoreItems = walkAndFill(item, row,  '', '', fieldStatusMap);
-            rows.push({ ...row });
-            iteration++;
-           
-        }while(hasMoreItems);
+            allFields.forEach(field => row[field] = null);
+            hasMoreItems = walkAndFill(item, row, fieldStatusMap);
+            rows.push(row);
+        }
     }
     return rows;
 }
