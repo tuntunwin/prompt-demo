@@ -22,34 +22,34 @@ function getAllFields(obj, parent = '') {
 }
 
 // Walk and fill as per pseudo code
-function walkAndFill(item, row, fieldStatusMap, parentField = null, parentStatusField=null, currentItemIndex = null) {
+function walkAndFill(item, row, visitedFields, parentField = null, parentStatusField=null, currentItemIndex = null) {
     let hasMoreItems = false;
     
     for (const key in item) {
         const value = item[key];
-        const rowField = parentField ? `${parentField}.${key}` : key;
-        const statusFieldPrefix = parentStatusField ? `${parentStatusField}.` : '';
-        const statusField = currentItemIndex ? `${statusFieldPrefix}${key}` : `${statusFieldPrefix}${currentItemIndex}.${key}`;
+        const rowField = parentField !== null ? `${parentField}.${key}` : key;
+        const statusFieldPrefix = parentStatusField !== null ? `${parentStatusField}.` : '';
+        const statusField = currentItemIndex !== null ? `${statusFieldPrefix}${currentItemIndex}.${key}`: `${statusFieldPrefix}${key}`;
         
-        if (!(statusField in fieldStatusMap) || fieldStatusMap[statusField] !== -1) {
+        if (!(statusField in visitedFields) || visitedFields[statusField] !== -1) {
             if (Array.isArray(value)) {
-                const arrayIndex = fieldStatusMap[statusField] || 0;
+                const arrayIndex = visitedFields[statusField] || 0;
                 
                 if (arrayIndex < value.length) {
-                    const hasMoreItemsInArray = walkAndFill(value[arrayIndex], row, fieldStatusMap, rowField, statusField, arrayIndex);
+                    const hasMoreItemsInArray = walkAndFill(value[arrayIndex], row, visitedFields, rowField, statusField, arrayIndex);
                     
                     if (!hasMoreItemsInArray) {
-                        fieldStatusMap[statusField] = (arrayIndex + 1 < value.length) ? arrayIndex + 1 : -1;
+                        visitedFields[statusField] = (arrayIndex + 1 < value.length) ? arrayIndex + 1 : -1;
                     }
                     
-                    hasMoreItems = hasMoreItems || fieldStatusMap[statusField] !== -1;
+                    hasMoreItems = hasMoreItems || visitedFields[statusField] !== -1;
                 } 
             } else if (value && typeof value === 'object') {
-                hasMoreItems = walkAndFill(value, row, fieldStatusMap, rowField, statusField) || hasMoreItems;
+                hasMoreItems = walkAndFill(value, row, visitedFields, rowField, statusField) || hasMoreItems;
             } else {
                 // Scalar value
                 row[rowField] = value;
-                fieldStatusMap[statusField] = -1;
+                visitedFields[statusField] = -1;
             } 
         }
     }
@@ -57,24 +57,26 @@ function walkAndFill(item, row, fieldStatusMap, parentField = null, parentStatus
 }
 
 // Main flatten function
-function flattenJsonArray(items) {
+function* flattenJsonArray(items) {
     if (!items.length) return [];
     
     const allFields = getAllFields(items[0]);
-    const rows = [];
+    //const rows = [];
     
     for (const item of items) {
-        const fieldStatusMap = {};
+        const visitedFields = {};
         let hasMoreItems = true;
         
         while (hasMoreItems) {
             const row = {};
             allFields.forEach(field => row[field] = null);
-            hasMoreItems = walkAndFill(item, row, fieldStatusMap);
-            rows.push(row);
+            hasMoreItems = walkAndFill(item, row, visitedFields);
+            console.log(`Visited Fields: ${JSON.stringify(visitedFields)}`);
+            //rows.push(row);
+            yield row; // Use generator to yield each row
         }
     }
-    return rows;
+    //return rows;
 }
 
 // Helper function to convert rows to XLSX
@@ -94,7 +96,7 @@ function main() {
         process.exit(1);
     }
     const input = JSON.parse(fs.readFileSync(inputPath, 'utf8'));
-    const rows = flattenJsonArray(input);
+    const rows = Array.from(flattenJsonArray(input));
     
     // Write to XLSX instead of JSON
     writeToXLSX(rows, outputPath);
