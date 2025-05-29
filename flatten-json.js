@@ -21,41 +21,49 @@ function getAllFields(obj, parent = '') {
 }
 
 // Walk and fill as per pseudo code
-function walkAndFill(item, fieldStatusMap, row, parentField, isLastItem = null) {
+function walkAndFill(item, row, parentField, fieldStatusMap, itemIndex = -1) {
+    let hasMoreItems = false;
     for (const key in item) {
         const value = item[key];
-        const keyField = parentField ? `${parentField}.${key}` : key;
-        console.log(`Processing field: ${keyField}, value: ${JSON.stringify(value)}, last item: ${isLastItem}`);
-        if (!(keyField in fieldStatusMap) || fieldStatusMap[keyField] !== -1) {
-            if (value === null || typeof value !== 'object') {
-                // Scalar value
-                row[keyField] = value;
-                if (isLastItem === null || isLastItem) {
-                    fieldStatusMap[keyField] = -1;
-                }
-            } else if (Array.isArray(value)) {
-                let itemIndex = fieldStatusMap[keyField] || 0;
-                console.log(`Array field before: ${keyField}, current index: ${itemIndex}`);
+        const rowField = parentField ? `${parentField}.${key}` : key;
+        const statusField = itemIndex == -1 ? rowField : `${rowField}. ${itemIndex}`;
+        console.log(`Processing field: ${rowField}, statusField: ${statusField}, value: ${JSON.stringify(value)}`);
+        if (!(statusField in fieldStatusMap) || fieldStatusMap[statusField] !== -1) {
+            if (Array.isArray(value)) {
+                console.log("array field");
+                let itemIndex = fieldStatusMap[statusField] || 0;
+                
+                //console.log(`Array field before: ${rowField}, current index: ${itemIndex}`);
                 if (itemIndex >= 0 && itemIndex < value.length) {
-                    walkAndFill(value[itemIndex], fieldStatusMap, row, keyField, itemIndex == value.length - 1);
-                    // Check if all subfields are -1
-                    const subKeys = Object.keys(fieldStatusMap).filter(k => k.startsWith(keyField + '.'));
-                    const allSubDone = subKeys.every(k => fieldStatusMap[k] === -1);
-                    let nextIndex = (itemIndex + 1 < value.length) ? itemIndex + 1 : -1;
-                    if (isLastItem === null || isLastItem) {
-                        fieldStatusMap[keyField] = subKeys.length > 0 && allSubDone ? nextIndex : itemIndex;
-                    }
-                } else {
-                    if (isLastItem === null || isLastItem) {
-                        fieldStatusMap[keyField] = -1;
-                    }
-                }
-                console.log(`Array field after: ${keyField}, current index: ${fieldStatusMap[keyField]}`);
-            } else if (typeof value === 'object') {
-                walkAndFill(value, fieldStatusMap, row, keyField, isLastItem);
+                    let nextIndex = itemIndex;
+                    console.log(`Processing array field: ${rowField}, itemIndex: ${itemIndex}`);
+                   let hasMoreItemsInCurrentIndex = walkAndFill(value[itemIndex],  row, rowField, fieldStatusMap, itemIndex);
+                   if (!hasMoreItemsInCurrentIndex) {
+                       // If no more items in this index, mark as done
+                       nextIndex = (itemIndex + 1 < value.length) ? itemIndex + 1 : -1;
+                       fieldStatusMap[statusField] = nextIndex;
+                       
+                   }
+                   hasMoreItems ||= nextIndex != -1;
+                   console.log(nextIndex != -1 ? `hasMOreItems: ${hasMoreItems} Moving to next index: ${nextIndex}` : `No more items in array for field: ${rowField}`);
+                } 
+                //console.log(`Array field after: ${rowField}, current index: ${fieldStatusMap[rowField]}`);
             }
+            else if (typeof value === 'object') {
+                console.log("object field");
+                hasMoreItems ||= walkAndFill(value, row, rowField, fieldStatusMap);
+            }
+            
+            else  {
+                // Scalar value
+                row[rowField] = value;
+                fieldStatusMap[statusField] = -1;
+            } 
+            console.log(`Finished processing field: ${rowField}, hasMoreItems: ${hasMoreItems}`);
         }
     }
+    console.log(`Finished processing field: ${parentField}, hasMoreItems: ${hasMoreItems}`);
+    return hasMoreItems;
 }
 
 // Main flatten function
@@ -65,18 +73,17 @@ function flattenJsonArray(items) {
     const rows = [];
     for (const item of items) {
         const fieldStatusMap = {};
-        let done = false;
+        let hasMoreItems = false;
         let iteration = 0;
-        while (!done) {
-            iteration++;
+        do {
             const row = {};
             allFields.forEach(f => row[f] = null);
-            walkAndFill(item, fieldStatusMap, row, '');
+            hasMoreItems = walkAndFill(item, row,  '', fieldStatusMap);
             rows.push({ ...row });
-            console.log(`Iteration ${iteration}, fieldStatusMap:${JSON.stringify(fieldStatusMap, null, 2)}\n Row:\n${JSON.stringify(row)}`);
-            // Done if all fields in fieldStatusMap are -1
-            done = Object.values(fieldStatusMap).every(v => v === -1);
-        }
+            console.log(`Iteration ${iteration}, fieldStatusMap:${JSON.stringify(fieldStatusMap)}\n Row:\n${JSON.stringify(row)}`);
+            iteration++;
+           
+        }while(hasMoreItems);
     }
     return rows;
 }

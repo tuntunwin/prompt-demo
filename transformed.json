@@ -29,17 +29,38 @@
     "time": null,
     "status": null,
     "details.vehiclesInvolved.type": "Motorcycle",
-    "details.vehiclesInvolved.plateNumber.serial": "SBC2334X",
-    "details.vehiclesInvolved.plateNumber.region": "ML",
+    "details.vehiclesInvolved.plateNumber.serial": null,
+    "details.vehiclesInvolved.plateNumber.region": null,
     "details.vehiclesInvolved.severity": "High",
     "details.casualties": null,
     "details.lanesBlocked": null,
     "advisories.type": "Congestion Alert",
     "advisories.message": "Expect delays of up to 25 minutes",
+    "responders.agency": null,
+    "responders.arrivalTime": null,
+    "responders.personnel.name": "Cpl. Lim Hui 2",
+    "responders.personnel.role": "Traffic Control"
+  },
+  {
+    "incidentId": null,
+    "type": null,
+    "location.road": null,
+    "location.direction": null,
+    "location.landmark": null,
+    "time": null,
+    "status": null,
+    "details.vehiclesInvolved.type": null,
+    "details.vehiclesInvolved.plateNumber.serial": null,
+    "details.vehiclesInvolved.plateNumber.region": null,
+    "details.vehiclesInvolved.severity": null,
+    "details.casualties": null,
+    "details.lanesBlocked": null,
+    "advisories.type": null,
+    "advisories.message": null,
     "responders.agency": "SCDF 2",
     "responders.arrivalTime": "2025-05-17T07:50:00+08:00",
-    "responders.personnel.name": "Lt. Ravi Kumar 3",
-    "responders.personnel.role": "Rescue Operations"
+    "responders.personnel.name": null,
+    "responders.personnel.role": null
   },
   {
     "incidentId": null,
@@ -59,8 +80,8 @@
     "advisories.message": null,
     "responders.agency": null,
     "responders.arrivalTime": null,
-    "responders.personnel.name": "Spec. Ong Jia 4",
-    "responders.personnel.role": "Rescue Operations"
+    "responders.personnel.name": null,
+    "responders.personnel.role": null
   },
   {
     "incidentId": "INC002",
@@ -92,17 +113,38 @@
     "time": null,
     "status": null,
     "details.vehiclesInvolved.type": "Motorcycle",
-    "details.vehiclesInvolved.plateNumber.serial": "SBC2334X",
-    "details.vehiclesInvolved.plateNumber.region": "ML",
+    "details.vehiclesInvolved.plateNumber.serial": null,
+    "details.vehiclesInvolved.plateNumber.region": null,
     "details.vehiclesInvolved.severity": "High",
     "details.casualties": null,
     "details.lanesBlocked": null,
     "advisories.type": "Congestion Alert 2",
     "advisories.message": "Expect delays of up to 25 minutes",
+    "responders.agency": null,
+    "responders.arrivalTime": null,
+    "responders.personnel.name": "Cpl. Lim Hui 2",
+    "responders.personnel.role": "Rescue Operations"
+  },
+  {
+    "incidentId": null,
+    "type": null,
+    "location.road": null,
+    "location.direction": null,
+    "location.landmark": null,
+    "time": null,
+    "status": null,
+    "details.vehiclesInvolved.type": null,
+    "details.vehiclesInvolved.plateNumber.serial": null,
+    "details.vehiclesInvolved.plateNumber.region": null,
+    "details.vehiclesInvolved.severity": null,
+    "details.casualties": null,
+    "details.lanesBlocked": null,
+    "advisories.type": null,
+    "advisories.message": null,
     "responders.agency": "Traffic Police",
     "responders.arrivalTime": "2025-05-17T07:50:00+08:00",
-    "responders.personnel.name": "Lt. Ravi Kumar 3",
-    "responders.personnel.role": "Rescue Operations"
+    "responders.personnel.name": null,
+    "responders.personnel.role": null
   },
   {
     "incidentId": null,
@@ -122,7 +164,7 @@
     "advisories.message": null,
     "responders.agency": null,
     "responders.arrivalTime": null,
-    "responders.personnel.name": "Spec. Ong Jia 4",
-    "responders.personnel.role": "Rescue Operations"
+    "responders.personnel.name": null,
+    "responders.personnel.role": null
   }
 ]
