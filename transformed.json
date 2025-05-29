@@ -29,8 +29,8 @@
     "time": null,
     "status": null,
     "details.vehiclesInvolved.type": "Motorcycle",
-    "details.vehiclesInvolved.plateNumber.serial": null,
-    "details.vehiclesInvolved.plateNumber.region": null,
+    "details.vehiclesInvolved.plateNumber.serial": "SBC2334X",
+    "details.vehiclesInvolved.plateNumber.region": "ML",
     "details.vehiclesInvolved.severity": "High",
     "details.casualties": null,
     "details.lanesBlocked": null,
@@ -59,8 +59,8 @@
     "advisories.message": null,
     "responders.agency": "SCDF 2",
     "responders.arrivalTime": "2025-05-17T07:50:00+08:00",
-    "responders.personnel.name": null,
-    "responders.personnel.role": null
+    "responders.personnel.name": "Lt. Ravi Kumar 3",
+    "responders.personnel.role": "Rescue Operations"
   },
   {
     "incidentId": null,
@@ -80,8 +80,8 @@
     "advisories.message": null,
     "responders.agency": null,
     "responders.arrivalTime": null,
-    "responders.personnel.name": null,
-    "responders.personnel.role": null
+    "responders.personnel.name": "Spec. Ong Jia 4",
+    "responders.personnel.role": "Rescue Operations"
   },
   {
     "incidentId": "INC002",
@@ -113,8 +113,8 @@
     "time": null,
     "status": null,
     "details.vehiclesInvolved.type": "Motorcycle",
-    "details.vehiclesInvolved.plateNumber.serial": null,
-    "details.vehiclesInvolved.plateNumber.region": null,
+    "details.vehiclesInvolved.plateNumber.serial": "SBC2334X",
+    "details.vehiclesInvolved.plateNumber.region": "ML",
     "details.vehiclesInvolved.severity": "High",
     "details.casualties": null,
     "details.lanesBlocked": null,
@@ -143,8 +143,8 @@
     "advisories.message": null,
     "responders.agency": "Traffic Police",
     "responders.arrivalTime": "2025-05-17T07:50:00+08:00",
-    "responders.personnel.name": null,
-    "responders.personnel.role": null
+    "responders.personnel.name": "Lt. Ravi Kumar 3",
+    "responders.personnel.role": "Rescue Operations"
   },
   {
     "incidentId": null,
@@ -164,7 +164,7 @@
     "advisories.message": null,
     "responders.agency": null,
     "responders.arrivalTime": null,
-    "responders.personnel.name": null,
-    "responders.personnel.role": null
+    "responders.personnel.name": "Spec. Ong Jia 4",
+    "responders.personnel.role": "Rescue Operations"
   }
 ]

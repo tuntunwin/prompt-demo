@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import XLSX from 'xlsx';
 
 // Recursively get all dot notation fields from an object
 function getAllFields(obj, parent = '') {
@@ -21,23 +22,20 @@ function getAllFields(obj, parent = '') {
 }
 
 // Walk and fill as per pseudo code
-function walkAndFill(item, row, parentField, fieldStatusMap, itemIndex = -1) {
+function walkAndFill(item, row, parentField, parentStatusField, fieldStatusMap, itemIndex = -1) {
     let hasMoreItems = false;
     for (const key in item) {
         const value = item[key];
         const rowField = parentField ? `${parentField}.${key}` : key;
-        const statusField = itemIndex == -1 ? rowField : `${rowField}. ${itemIndex}`;
-        console.log(`Processing field: ${rowField}, statusField: ${statusField}, value: ${JSON.stringify(value)}`);
+        const statusFieldPrefix = parentStatusField ? `${parentStatusField}.` : '';
+        const statusField = itemIndex == -1 ? `${statusFieldPrefix}${key}` : `${statusFieldPrefix}${itemIndex}.${key}`;
         if (!(statusField in fieldStatusMap) || fieldStatusMap[statusField] !== -1) {
             if (Array.isArray(value)) {
-                console.log("array field");
                 let itemIndex = fieldStatusMap[statusField] || 0;
                 
-                //console.log(`Array field before: ${rowField}, current index: ${itemIndex}`);
                 if (itemIndex >= 0 && itemIndex < value.length) {
                     let nextIndex = itemIndex;
-                    console.log(`Processing array field: ${rowField}, itemIndex: ${itemIndex}`);
-                   let hasMoreItemsInCurrentIndex = walkAndFill(value[itemIndex],  row, rowField, fieldStatusMap, itemIndex);
+                   let hasMoreItemsInCurrentIndex = walkAndFill(value[itemIndex],  row, rowField, statusField, fieldStatusMap, itemIndex);
                    if (!hasMoreItemsInCurrentIndex) {
                        // If no more items in this index, mark as done
                        nextIndex = (itemIndex + 1 < value.length) ? itemIndex + 1 : -1;
@@ -45,13 +43,10 @@ function walkAndFill(item, row, parentField, fieldStatusMap, itemIndex = -1) {
                        
                    }
                    hasMoreItems ||= nextIndex != -1;
-                   console.log(nextIndex != -1 ? `hasMOreItems: ${hasMoreItems} Moving to next index: ${nextIndex}` : `No more items in array for field: ${rowField}`);
                 } 
-                //console.log(`Array field after: ${rowField}, current index: ${fieldStatusMap[rowField]}`);
             }
             else if (typeof value === 'object') {
-                console.log("object field");
-                hasMoreItems ||= walkAndFill(value, row, rowField, fieldStatusMap);
+                hasMoreItems ||= walkAndFill(value, row, rowField, statusField, fieldStatusMap);
             }
             
             else  {
@@ -59,10 +54,8 @@ function walkAndFill(item, row, parentField, fieldStatusMap, itemIndex = -1) {
                 row[rowField] = value;
                 fieldStatusMap[statusField] = -1;
             } 
-            console.log(`Finished processing field: ${rowField}, hasMoreItems: ${hasMoreItems}`);
         }
     }
-    console.log(`Finished processing field: ${parentField}, hasMoreItems: ${hasMoreItems}`);
     return hasMoreItems;
 }
 
@@ -78,9 +71,8 @@ function flattenJsonArray(items) {
         do {
             const row = {};
             allFields.forEach(f => row[f] = null);
-            hasMoreItems = walkAndFill(item, row,  '', fieldStatusMap);
+            hasMoreItems = walkAndFill(item, row,  '', '', fieldStatusMap);
             rows.push({ ...row });
-            console.log(`Iteration ${iteration}, fieldStatusMap:${JSON.stringify(fieldStatusMap)}\n Row:\n${JSON.stringify(row)}`);
             iteration++;
            
         }while(hasMoreItems);
@@ -88,18 +80,28 @@ function flattenJsonArray(items) {
     return rows;
 }
 
+// Helper function to convert rows to XLSX
+function writeToXLSX(rows, outputPath) {
+    const worksheet = XLSX.utils.json_to_sheet(rows);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Flattened Data');
+    XLSX.writeFile(workbook, outputPath);
+}
+
 // Example usage
 function main() {
-    const inputPath = process.argv[2] || 'input.json';
-    const outputPath = process.argv[3] || 'transformed.json';
+    const inputPath = process.argv[2] || 'test_input.json';
+    const outputPath = process.argv[3] || 'test_transformed.xlsx';
     if (!inputPath) {
-        console.error('Usage: node flatten-json.js <input.json> [output.json]');
+        console.error('Usage: node flatten-json.js <input.json> [output.xlsx]');
         process.exit(1);
     }
     const input = JSON.parse(fs.readFileSync(inputPath, 'utf8'));
     const rows = flattenJsonArray(input);
-    fs.writeFileSync(outputPath, JSON.stringify(rows, null, 2), 'utf8');
-    console.log(`Flattened JSON written to ${outputPath}`);
+    
+    // Write to XLSX instead of JSON
+    writeToXLSX(rows, outputPath);
+    console.log(`Flattened data written to ${outputPath}`);
 }
 
 // ES module entry point check

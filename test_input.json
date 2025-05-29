@@ -1,0 +1,242 @@
+[
+  {
+    "employeeId": "EMP-2024-001",
+    "firstName": "Sarah",
+    "personalInfo": {
+      "dateOfBirth": "1990-03-15",
+      "phoneNumber": "+1-555-0123",
+      "emergencyContact": "John Mitchell (Spouse)"
+    },
+    "lastName": "Johnson",
+    "email": "sarah.johnson@company.com",
+    "employments": [{
+      "performanceReviews": [
+        {
+          "reviewId": "REV-2024-Q1",
+          "metrics": [
+            {
+              "metricName": "Technical Skills",
+              "score": "4.5"
+            },
+            {
+              "metricName": "Communication",
+              "score": "4.0"
+            }
+          
+          ],
+          "reviewDate": "2024-03-15"
+        },
+        {
+          "reviewId": "REV-2024-Q2",
+          "metrics": [
+            {
+              "metricName": "Technical Skills",
+              "score": "4.5"
+            },
+            {
+              "metricName": "Communication",
+              "score": "4.0"
+            }
+          
+          ],
+          "reviewDate": "2024-03-15"
+        }
+      ],
+      "yearsOfService": 3,
+      "department": "Software Engineering"
+    },
+    {
+      "performanceReviews": [
+        {
+          "reviewId": "REV-2024-Q1",
+          "metrics": [
+            {
+              "metricName": "Technical Skills",
+              "score": "4.5"
+            },
+            {
+              "metricName": "Communication",
+              "score": "4.0"
+            }
+          
+          ],
+          "reviewDate": "2024-03-15"
+        },
+        {
+          "reviewId": "REV-2024-Q2",
+          "metrics": [
+            {
+              "metricName": "Technical Skills",
+              "score": "4.5"
+            },
+            {
+              "metricName": "Communication",
+              "score": "4.0"
+            }
+          
+          ],
+          "reviewDate": "2024-03-15"
+        }
+      ],
+      "yearsOfService": 3,
+      "department": "Prompt Engineering"
+    }
+  ],
+    "skills": [
+      {
+        "skillName": "JavaScript",
+        "proficiencyLevel": "Expert"
+      },
+      {
+        "skillName": "Project Management",
+        "proficiencyLevel": "Intermediate"
+      }
+    ],
+    "trainingHistory": [
+      {
+        "courseName": "Advanced Leadership Development",
+        "completionDate": "2024-02-28",
+        "certifications": [
+          {
+            "certificationName": "Certified Scrum Master",
+            "issueDate": "2024-01-15"
+          },
+          {
+            "certificationName": "AWS Solutions Architect",
+            "issueDate": "2023-11-20"
+          }
+        ]
+      },
+      {
+        "courseName": "Advanced Leadership Development 2",
+        "completionDate": "2024-02-28",
+        "certifications": [
+          {
+            "certificationName": "Certified Scrum Master",
+            "issueDate": "2024-01-15"
+          },
+          {
+            "certificationName": "AWS Solutions Architect",
+            "issueDate": "2023-11-20"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "employeeId": "EMP-2024-002",
+    "firstName": "Michael",
+    "personalInfo": {
+      "dateOfBirth": "1985-07-22",
+      "phoneNumber": "+1-555-0456",
+      "emergencyContact": "Lisa Chen (Sister)"
+    },
+    "lastName": "Rodriguez",
+    "email": "michael.rodriguez@company.com",
+    "employments": [{
+      "performanceReviews": [
+        {
+          "reviewId": "REV-2024-Q1",
+          "metrics": [
+            {
+              "metricName": "Technical Skills",
+              "score": "4.5"
+            },
+            {
+              "metricName": "Communication",
+              "score": "4.0"
+            }
+          
+          ],
+          "reviewDate": "2024-03-15"
+        },
+        {
+          "reviewId": "REV-2024-Q2",
+          "metrics": [
+            {
+              "metricName": "Technical Skills",
+              "score": "4.5"
+            },
+            {
+              "metricName": "Communication",
+              "score": "4.0"
+            }
+          
+          ],
+          "reviewDate": "2024-03-15"
+        }
+      ],
+      "yearsOfService": 3,
+      "department": "Software Engineering"
+    },
+    {
+      "performanceReviews": [
+        {
+          "reviewId": "REV-2024-Q1",
+          "metrics": [
+            {
+              "metricName": "Technical Skills",
+              "score": "4.5"
+            },
+            {
+              "metricName": "Communication",
+              "score": "4.0"
+            }
+          
+          ],
+          "reviewDate": "2024-03-15"
+        },
+        {
+          "reviewId": "REV-2024-Q2",
+          "metrics": [
+            {
+              "metricName": "Technical Skills",
+              "score": "4.5"
+            },
+            {
+              "metricName": "Communication",
+              "score": "4.0"
+            }
+          
+          ],
+          "reviewDate": "2024-03-15"
+        }
+      ],
+      "yearsOfService": 3,
+      "department": "Prompt Engineering"
+    }
+  ],
+    "skills": [
+      {
+        "skillName": "Employee Relations",
+        "proficiencyLevel": "Expert"
+      },
+      {
+        "skillName": "Data Analysis",
+        "proficiencyLevel": "Intermediate"
+      }
+    ],
+    "trainingHistory": [
+      {
+        "courseName": "Diversity and Inclusion Workshop",
+        "completionDate": "2024-01-10",
+        "certifications": [
+          {
+            "certificationName": "PHR Certification",
+            "issueDate": "2023-08-15"
+          }
+        ]
+      },
+      {
+        "courseName": "Diversity and Inclusion Workshop 2",
+        "completionDate": "2024-01-10",
+        "certifications": [
+          {
+            "certificationName": "PHR Certification",
+            "issueDate": "2023-08-15"
+          }
+        ]
+      }
+    ]
+  }
+]
