@@ -48,7 +48,9 @@ function walkAndFill(item, row, visitedFields, parentField = null, parentStatusF
                 hasMoreItems = walkAndFill(value, row, visitedFields, rowField, statusField) || hasMoreItems;
             } else {
                 // Scalar value
-                row[rowField] = value;
+                if( row[rowField] !== undefined){
+                    row[rowField] = value;
+                }
                 visitedFields[statusField] = -1;
             } 
         }
@@ -68,8 +70,7 @@ function* flattenJsonArray(items) {
         let hasMoreItems = true;
         
         while (hasMoreItems) {
-            const row = {};
-            allFields.forEach(field => row[field] = null);
+            const row = {"incidentId": null, "type": null, "location.type": null, "advisories.type":null, "responders.personnel.name":null, "responders.agency":null}; // Initialize row with default fields
             hasMoreItems = walkAndFill(item, row, visitedFields);
             console.log(`Visited Fields: ${JSON.stringify(visitedFields)}`);
             //rows.push(row);
@@ -89,8 +90,8 @@ function writeToXLSX(rows, outputPath) {
 
 // Example usage
 function main() {
-    const inputPath = process.argv[2] || 'test_input.json';
-    const outputPath = process.argv[3] || 'test_transformed.xlsx';
+    const inputPath = process.argv[2] || 'input.json';
+    const outputPath = process.argv[3] || 'transformed.xlsx';
     if (!inputPath) {
         console.error('Usage: node flatten-json.js <input.json> [output.xlsx]');
         process.exit(1);
